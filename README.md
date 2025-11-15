@@ -41,7 +41,9 @@ Profesionales que quieren IA integrada en su flujo de análisis
 
 🚀 Por qué usarlo
 
-Todo tu reconocimiento web full stack en un solo comando: ./redteam-scanner.sh <dominio> Escanea, organiza, analiza, prioriza y entrega hallazgos — todo totalmente automatizado 
+Todo tu reconocimiento web full stack en un solo comando: ./redteam-scanner.sh <dominio> 
+
+Escanea, organiza, analiza, prioriza y entrega hallazgos — todo totalmente automatizado 
 
 Nuestras Redes Sociales
 
