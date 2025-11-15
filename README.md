@@ -50,9 +50,13 @@ Nuestras Redes Sociales
 Telegram
 
 https://t.me/PlantillasNucleiHackingTeam
+
 https://t.me/HackingTeamGrupoOfficial
+
 https://t.me/+0hHSaKO7eI9mNWY8 Hacking Team Difusion
+
 https://t.me/+llcmNGzz6JIyMmI0 Biblioteca
+
 https://t.me/TermuxHackingTeam
 
 X
