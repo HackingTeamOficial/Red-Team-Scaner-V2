@@ -1,4 +1,5 @@
 🛡 RedTeam Scanner v2 – Herramienta oficial de Hacking Team 
+<img width="1920" height="1080" alt="Screenshot_2025-11-15_18_02_16" src="https://github.com/user-attachments/assets/7d6a4c3b-1c01-4f7b-add9-f54f1cf73555" />
 
 RedTeam Scanner v2 es una herramienta avanzada de reconocimiento y análisis automatizado diseñada por la comunidad Hacking Team, Orientada a pentesters, bug bounty hunters y equipos de Red Team.
 
