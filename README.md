@@ -1,4 +1,4 @@
-🛡 RedTeam Scanner v2 – Herramienta oficial de Hacking Team 
+🛡 RedTeam Scanner v2 v3 – Herramienta oficial de Hacking Team Para Equipos Red Team
 <img width="1920" height="1080" alt="Screenshot_2025-11-15_18_02_16" src="https://github.com/user-attachments/assets/7d6a4c3b-1c01-4f7b-add9-f54f1cf73555" />
 
 RedTeam Scanner v2 es una herramienta avanzada de reconocimiento y análisis automatizado diseñada por la comunidad Hacking Team, Orientada a pentesters, bug bounty hunters y equipos de Red Team.
@@ -11,7 +11,7 @@ Automatiza un flujo completo de reconocimiento y escaneo, desde subdominios hast
 
 Incluye herramientas clave como:
 
-subfinder, assetfinder, dnsx, naabu, httpx, gau, waybackurls, dalfox, nuclei, ffuf.
+subfinder, assetfinder, dnsx, naabu, httpx, gau, waybackurls, dalfox, nuclei, ffuf, metasploit, nmap, ghauri.
 
 Además de extracción desde crt.sh.
 
@@ -44,6 +44,20 @@ Profesionales que quieren IA integrada en su flujo de análisis
 Todo tu reconocimiento web full stack en un solo comando: ./redteam-scanner.sh <dominio> 
 
 Escanea, organiza, analiza, prioriza y entrega hallazgos — todo totalmente automatizado 
+
+ACTUALIZACION 
+
+Ahora el RedTeam Scanner es una suite automática capaz de:
+
+    Detectar y mapear los activos.
+
+    Atacar los servicios con exploits habituales.
+
+    Probar inyección SQL en URLs relevantes.
+
+    Generar informes y resúmenes profesionales usando IA local.
+
+    Exportar todo centralmente en un archivo JSON listo para reportes o dashboards.
 
 Nuestras Redes Sociales
 
