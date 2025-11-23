@@ -1,5 +1,5 @@
 #!/bin/bash
-# RedTeam Scanner v4 - Automate, Exploit & IA Report - 2025
+# RedTeam Scanner v3 - Automate, Exploit & IA Report - 2025
 
 set -o errexit
 set -o pipefail
