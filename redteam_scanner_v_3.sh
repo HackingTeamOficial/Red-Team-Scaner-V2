@@ -1,5 +1,5 @@
 #!/bin/bash
-# RedTeam Scanner v3 - Automate, Exploit & IA Report - 2025
+# RedTeam Scanner v6 - Automate, Exploit & IA Report - 2025
 
 set -o errexit
 set -o pipefail
@@ -9,6 +9,10 @@ target="${1:-}"
 TIMEOUT_SECONDS=180
 OUT_BASE="outputs"
 TOOLS=("subfinder" "assetfinder" "dnsx" "naabu" "nmap" "httpx" "gau" "waybackurls" "dalfox" "nuclei" "ffuf" "ghauri")
+OLLAMA_BIN="${OLLAMA_BIN:-$(command -v ollama || true)}"
+GPT4ALL_BIN="${GPT4ALL_BIN:-$(command -v gpt4all || true)}"
+LLAMACPP_BIN="${LLAMACPP_BIN:-$(command -v llama-cli || true)}"
+OLLAMA_MODEL="${OLLAMA_MODEL:-}"
 
 # Preparación
 domain="$(echo "$target" | sed -E 's#https?://##' | sed 's#/.*##')"
@@ -17,44 +21,25 @@ aggregate="${outdir}/${domain}_aggregate.txt"
 json_out="${outdir}/${domain}_summary.json"
 mkdir -p "$outdir"
 
-# Colores ANSI para banner
-COLORS=(
-  "\e[91m"  # Rojo claro
-  "\e[92m"  # Verde claro
-  "\e[93m"  # Amarillo claro
-  "\e[94m"  # Azul claro
-  "\e[95m"  # Magenta claro
-  "\e[96m"  # Cyan claro
-)
-
-BANNER_TEXT="
+banner(){
+  echo -e "\e[91m
 ╻ ╻┏━┓┏━╸╻┏ ╻┏┓╻┏━╸   ╺┳╸┏━╸┏━┓┏┳┓   ┏━┓┏━╸╺┳┓   ╺┳╸┏━╸┏━┓┏┳┓   ╻ ╻┏━┓
 ┣━┫┣━┫┃  ┣┻┓┃┃┗┫┃╺┓    ┃ ┣╸ ┣━┫┃┃┃   ┣┳┛┣╸  ┃┃    ┃ ┣╸ ┣━┫┃┃┃   ┃┏┛╺━┫
 ╹ ╹╹ ╹┗━╸╹ ╹╹╹ ╹┗━┛    ╹ ┗━╸╹ ╹╹ ╹   ╹┗╸┗━╸╺┻┛    ╹ ┗━╸╹ ╹╹ ╹   ┗┛ ┗━┛
+     RedTeam Scanner v3 - Full Automation, Metasploit & RedTeam IA 
 
-RedTeam Scanner v2 a v3 - Full Automation, Metasploit & RedTeam IA 
-
-Telegram: [https://t.me/+0hHSaKO7eI9mNWY8](https://t.me/+0hHSaKO7eI9mNWY8)
+Telegram: https://t.me/+0hHSaKO7eI9mNWY8
 
 Team:@makina50 @HombreM @P4b10hdr @Vixt0r24 @kdeahack @HackingTeamProHackers 
    
  RedTeam Scanner v3 - Full Automation, Metasploit & RedTeam IA  
 \e[0m"
-
-banner(){
-  while true; do
-    for color in "${COLORS[@]}"; do
-      clear
-      echo -e "${color}${BANNER_TEXT}\e[0m"
-      echo "Objetivo: ${domain}"
-      echo "Salida: ${outdir}"
-      echo "──────────────────────────────────────────────"
-      sleep 2
-    done
-  done
+  echo "Objetivo: $domain"
+  echo "Salida: $outdir"
+  echo "──────────────────────────────────────────────"
 }
 
-log(){ echo -e "[$(date +%H:%M:%S)] $*" | tee -a "${aggregate}"; }
+log(){ echo -e "[$(date +%H:%M:%S)] $*" | tee -a "$aggregate"; }
 
 _timeout_cmd(){
   if timeout --help 2>&1 | grep -q -- '--foreground'; then
@@ -110,7 +95,7 @@ scan_all(){
   run_tool "gau" "gau $domain --subs" "$outdir/gau.txt"
   run_tool "waybackurls" "echo $domain | waybackurls" "$outdir/waybackurls.txt"
   run_tool "dalfox" "dalfox url https://$domain -S" "$outdir/dalfox.txt"
-  run_tool "nuclei" "nuclei -u https://$domain -silent -t /home/kali/sqli-xss-nuclei/" "$outdir/nuclei.txt"
+  run_tool "nuclei" "nuclei -u https://$domain -silent" "$outdir/nuclei.txt"
   run_tool "ffuf" "ffuf -u https://$domain/FUZZ -w /usr/share/wordlists/dirb/common.txt -t 40 -fc 404" "$outdir/ffuf.txt"
 }
 
@@ -128,66 +113,21 @@ scan_ghauri(){
   log "[OK] Resultados Ghauri: $ghauri_out"
 }
 
-# ===================== IA AUTOMÁTICA =====================
-detect_ai(){
-    for bin in ollama gpt4all gpt4all-lora llama llama-cli text-generation-webui; do
-        if command -v "$bin" >/dev/null 2>&1; then
-            echo "$bin"
-            return 0
-        fi
-    done
-    return 1
-}
-
 run_ai_local(){
-    local nuc_file="$outdir/nuclei.txt"
-    local ghauri_file="$outdir/ghauri.txt"
-    local outfile="$outdir/ai_report.txt"
-
-    if [ ! -s "$nuc_file" ] && [ ! -s "$ghauri_file" ]; then
-        log "[WARN] No hay datos de Nuclei o Ghauri para generar reporte IA."
-        return
-    fi
-
-    local prompt="Eres un RedTeamer. Resume hallazgos (Nuclei, Ghauri), prioriza por criticidad, impacto y mitigación.\n\nDatos:\n$(cat "$nuc_file" 2>/dev/null)\n$(cat "$ghauri_file" 2>/dev/null)"
-
-    local ai_bin
-    ai_bin=$(detect_ai)
-    if [ -z "$ai_bin" ]; then
-        log "[WARN] No se detectó ningún binario de IA compatible."
-        return
-    fi
-
-    log "[INFO] Ejecutando IA con $ai_bin..."
-
-    case "$ai_bin" in
-        ollama)
-            local model="${OLLAMA_MODEL:-$($ai_bin list | awk 'NR==2{print $1}')}"
-            printf "%s" "$prompt" | "$ai_bin" run "$model" >"$outfile"
-            ;;
-        gpt4all|gpt4all-lora)
-            echo "$prompt" | "$ai_bin" --model model.bin >"$outfile"
-            ;;
-        llama|llama-cli)
-            "$ai_bin" -p "$prompt" >"$outfile"
-            ;;
-        text-generation-webui)
-            echo "$prompt" >"$outdir/temp_prompt.txt"
-            "$ai_bin" --input "$outdir/temp_prompt.txt" --output "$outfile"
-            rm -f "$outdir/temp_prompt.txt"
-            ;;
-        *)
-            log "[WARN] IA detectada ($ai_bin) no soportada en este script."
-            ;;
-    esac
-
-    if [ -s "$outfile" ]; then
-        log "[OK] IA Reporte → $outfile"
-    else
-        log "[WARN] Falló la generación del reporte de IA."
-    fi
+  local nuc_file="$outdir/nuclei.txt"
+  local ghauri_file="$outdir/ghauri.txt"
+  local outfile="$outdir/ai_report.txt"
+  local prompt="Eres un RedTeamer. Resume hallazgos (Nuclei, Ghauri), prioriza por criticidad, impacto y mitigación.\n\nDatos:\n$(cat "$nuc_file" 2>/dev/null)\n$(cat "$ghauri_file" 2>/dev/null)"
+  if [ -n "$OLLAMA_BIN" ]; then
+    OLLAMA_MODEL="${OLLAMA_MODEL:-$($OLLAMA_BIN list | awk 'NR==2{print $1}')}"
+    printf "%s" "$prompt" | "$OLLAMA_BIN" run "$OLLAMA_MODEL" >"$outfile"
+  elif [ -n "$GPT4ALL_BIN" ]; then
+    echo "$prompt" | "$GPT4ALL_BIN" --model model.bin >"$outfile"
+  elif [ -n "$LLAMACPP_BIN" ]; then
+    "$LLAMACPP_BIN" -p "$prompt" >"$outfile"
+  fi
+  log "[OK] IA Reporte → $outfile"
 }
-# =========================================================
 
 generate_msf_resource(){
   local nmap_file="$outdir/nmap.grep"
@@ -196,9 +136,15 @@ generate_msf_resource(){
   log "[INFO] Analizando servicios para explotación..."
   grep -Eo '[0-9]+/(open|filtered)/tcp//[a-z0-9_\-]+' "$nmap_file" | while IFS=/ read -r port state proto _ service; do
     case "$service" in
-      ftp) echo "use exploit/unix/ftp/vsftpd_234_backdoor" >> "$msfrc" ;;
-      ssh) echo "use auxiliary/scanner/ssh/ssh_login" >> "$msfrc" ;;
-      smtp) echo "use auxiliary/scanner/smtp/smtp_enum" >> "$msfrc" ;;
+      ftp)
+        echo "use exploit/unix/ftp/vsftpd_234_backdoor" >> "$msfrc"
+        ;;
+      ssh)
+        echo "use auxiliary/scanner/ssh/ssh_login" >> "$msfrc"
+        ;;
+      smtp)
+        echo "use auxiliary/scanner/smtp/smtp_enum" >> "$msfrc"
+        ;;
       http|http-proxy|http-alt)
         echo "use auxiliary/scanner/http/http_version" >> "$msfrc"
         echo "use auxiliary/scanner/http/dir_scanner" >> "$msfrc"
@@ -227,6 +173,8 @@ generate_msf_resource(){
         ;;
       vnc)
         echo "use auxiliary/scanner/vnc/vnc_none_auth" >> "$msfrc"
+        ;;
+      *)
         ;;
     esac
     # Seteos comunes
@@ -257,7 +205,7 @@ generate_json(){
   log "[OK] JSON: $json_out"
 }
 
-# ================= FLUJO PRINCIPAL =================
+# FLUJO PRINCIPAL
 banner
 check_tools
 if $do_recon; then scan_all; fi
