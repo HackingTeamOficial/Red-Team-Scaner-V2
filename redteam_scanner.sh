@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────
-# RedTeam Scanner v8 - Automate · Exploit · CVE · IA · TG
+# RedTeam Scanner v4 - Automate · Exploit · CVE · IA · TG
 # Uso autorizado únicamente en targets con permiso explícito
 # ─────────────────────────────────────────────────────────────
 set -o errexit
@@ -10,7 +10,7 @@ set -o nounset
 # ═════════════════════════════════════════════════════════════
 # CONFIG
 # ═════════════════════════════════════════════════════════════
-VERSION="8.0"
+VERSION="4.0"
 TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-300}"
 OUT_BASE="${OUT_BASE:-outputs}"
 THREADS="${THREADS:-40}"
