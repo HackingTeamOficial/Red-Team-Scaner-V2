@@ -85,6 +85,28 @@ Ahora el RedTeam Scanner es una suite automática capaz de:
 
     Exportar todo centralmente en un archivo JSON listo para reportes o dashboards.
 
+Cómo usarlo
+bash
+
+chmod +x redteam_scanner.sh
+
+# 1) Instalar todo lo que pueda
+./redteam_scanner.sh --install
+
+# 2) Añadir Go bin al PATH (importante)
+echo 'export PATH="$PATH:$HOME/go/bin:$HOME/.local/bin"' >> ~/.bashrc
+source ~/.bashrc
+
+# 3) Ejecutar
+./redteam_scanner.sh ejemplo.com
+
+# Pipeline completo sin menú
+./redteam_scanner.sh ejemplo.com --full
+
+# Solo ver qué herramientas tienes
+./redteam_scanner.sh --check
+    
+
 Nuestras Redes Sociales
 
 Telegram
