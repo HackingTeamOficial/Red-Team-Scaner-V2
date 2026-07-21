@@ -2,8 +2,6 @@
 <img width="1920" height="1080" alt="Screenshot_2026-07-21_15_30_40" src="https://github.com/user-attachments/assets/777ec444-fa8d-49c5-9710-d08f03b68fe8" />
 <img width="1920" height="1080" alt="Screenshot_2026-07-21_15_30_44" src="https://github.com/user-attachments/assets/eb12ed58-8a97-46ce-9f60-169e42ebb8ec" />
 
-
-
 RedTeam Scanner v2 es una herramienta avanzada de reconocimiento y análisis automatizado diseñada por la comunidad Hacking Team, Orientada a pentesters, bug bounty hunters y equipos de Red Team.
 
 Combina en un solo script Bash las principales utilidades de enumeración ofensiva (subdominios, puertos, web scanning, fuzzing, extracción de URLs, XSS, escaneo de templates y más), gestionando errores, tiempos de ejecución y generando resultados organizados por dominio.
@@ -119,6 +117,8 @@ export TG_CHAT_ID="987654321"
 
 # Ejecutar
 ./redteam_scanner.sh ejemplo.com --full
+
+Video de la herramienta: https://youtu.be/WymycALbqsg
 
 Si prefieres ponerlas fijas, edita las líneas al inicio del script donde pone TG_BOT_TOKEN="${TG_BOT_TOKEN:-}" y pon el valor entre las comillas.
     
