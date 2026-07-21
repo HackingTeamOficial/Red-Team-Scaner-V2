@@ -1,5 +1,8 @@
-🛡 RedTeam Scanner v2 v3 – Herramienta oficial de Hacking Team Para Equipos Red Team
-<img width="1920" height="1080" alt="Screenshot_2025-11-15_18_02_16" src="https://github.com/user-attachments/assets/7d6a4c3b-1c01-4f7b-add9-f54f1cf73555" />
+🛡 RedTeam Scanner v4 NUEVA ACTUALIZACION – Herramienta oficial de Hacking Team Para Equipos Red Team
+<img width="1920" height="1080" alt="Screenshot_2026-07-21_15_30_40" src="https://github.com/user-attachments/assets/777ec444-fa8d-49c5-9710-d08f03b68fe8" />
+<img width="1920" height="1080" alt="Screenshot_2026-07-21_15_30_44" src="https://github.com/user-attachments/assets/eb12ed58-8a97-46ce-9f60-169e42ebb8ec" />
+
+
 
 RedTeam Scanner v2 es una herramienta avanzada de reconocimiento y análisis automatizado diseñada por la comunidad Hacking Team, Orientada a pentesters, bug bounty hunters y equipos de Red Team.
 
