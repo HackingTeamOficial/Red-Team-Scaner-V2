@@ -10,7 +10,7 @@ set -o nounset
 # ═════════════════════════════════════════════════════════════
 # CONFIG
 # ═════════════════════════════════════════════════════════════
-VERSION="7.0"
+VERSION="4.0"
 TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-300}"
 OUT_BASE="${OUT_BASE:-outputs}"
 THREADS="${THREADS:-40}"
