@@ -53,25 +53,14 @@ Escanea, organiza, analiza, prioriza y entrega hallazgos — todo totalmente aut
 Principales avances respecto al primer código
 
 Menú interactivo: puedes elegir qué módulos ejecutar (reconocimiento, escaneo de inyecciones, IA, Metasploit, o todos juntos).
-
 ​
-
 Reconocimiento avanzado: lanza tools como subfinder, assetfinder, nmap, naabu, nuclei y más, guardando todos los resultados en directorios organizados.
 
-​
-
 Automatización de explotación: analiza los puertos y servicios encontrados y genera comandos para Metasploit que lanzan exploits y módulos de ataque relevantes (por ejemplo, para SMB, HTTP, FTP, SSH, RDP, MySQL, etc.), todo sin intervención manual.
-​
-
-​
 
 IA offline: usa modelos locales (Ollama, GPT4All, Llama.cpp) para analizar los hallazgos y crear un informe técnico.
 
-​
-
 JSON final: produce un reporte estructurado en formato JSON con los resultados de escaneo, explotación y análisis IA, ideal para crear dashboards o informes automáticos.
-
-​
 
 Escaneo Ghauri: detecta automáticamente URLs interesantes y las somete a pruebas automáticas de SQLi usando Ghauri.
 ​
@@ -88,26 +77,50 @@ Ahora el RedTeam Scanner es una suite automática capaz de:
 
     Exportar todo centralmente en un archivo JSON listo para reportes o dashboards.
 
-Cómo usarlo
+Novedades en esta versión
+
+1. Módulo CVE / Searchsploit ([6])
+
+    Extrae automáticamente todos los CVE-ID de Nuclei, Nmap y Nikto.
+    Consulta la API pública cve.circl.lu para obtener CVSS y descripción de cada CVE.
+    Ejecuta searchsploit --cve <ID> para encontrar exploits concretos.
+    Separa los CVEs críticos (CVSS ≥ 7) en un archivo aparte.
+    Si no hay CVEs directos, busca por nombres de tecnología/versión desde httpx y Nmap.
+    Genera un archivo con los módulos de Metasploit aplicables para cada CVE.
+
+2. Notificaciones Telegram
+
+    Al inicio del escaneo (tg_notify_start): target, módulos, directorio de salida.
+    Al finalizar (tg_notify_summary): resumen con números, top 5 CVEs críticos, top 3 nuclei, y envía los archivos de hallazgos (CVE summary, nuclei, IA report).
+    Se activa configurando:
+
 bash
 
-chmod +x redteam_scanner.sh
+export TG_BOT_TOKEN="tu_token_bot"
+export TG_CHAT_ID="tu_chat_id"
 
-# 1) Instalar todo lo que pueda
-./redteam_scanner.sh --install
+O puedes ponerlas directamente al inicio del script en las variables TG_BOT_TOKEN y TG_CHAT_ID.
 
-# 2) Añadir Go bin al PATH (importante)
-echo 'export PATH="$PATH:$HOME/go/bin:$HOME/.local/bin"' >> ~/.bashrc
-source ~/.bashrc
+3. Otras mejoras
 
-# 3) Ejecutar
-./redteam_scanner.sh ejemplo.com
+    El menú ahora incluye la opción [6] CVE/Searchsploit y el Full Pipeline [9] la incluye.
+    El reporte HTML tiene una sección dedicada a CVEs/Exploits con tarjeta de conteo.
+    El JSON incluye cve.summary y cve.critical.
+    El autoinstalador (opción [0]) ahora también instala searchsploit (clona exploitdb en /opt/exploitdb).
 
-# Pipeline completo sin menú
+Configurar Telegram rápido
+bash
+
+# Crea un bot con @BotFather en Telegram, obtén el token
+# Obtén tu chat_id (escribe a @userinfobot)
+
+export TG_BOT_TOKEN="123456:ABC-DEF1234..."
+export TG_CHAT_ID="987654321"
+
+# Ejecutar
 ./redteam_scanner.sh ejemplo.com --full
 
-# Solo ver qué herramientas tienes
-./redteam_scanner.sh --check
+Si prefieres ponerlas fijas, edita las líneas al inicio del script donde pone TG_BOT_TOKEN="${TG_BOT_TOKEN:-}" y pon el valor entre las comillas.
     
 
 Nuestras Redes Sociales
