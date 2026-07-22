@@ -20,9 +20,9 @@ NUCLEI_SEVERITY="${NUCLEI_SEVERITY:-critical,high,medium}"
 GHAURI_URL_LIMIT="${GHAURI_URL_LIMIT:-15}"
 
 # Telegram (configurar con variables de entorno o editar aquí)
-TG_BOT_TOKEN="${TG_BOT_TOKEN:-}"
-TG_CHAT_ID="${TG_CHAT_ID:-}"
-TG_ENABLED=false
+TG_BOT_TOKEN="PON TU TOKEN AQUI DE TELEGRAM"
+TG_CHAT_ID="IDTELEGRAM"
+TG_ENABLED=true
 [[ -n "$TG_BOT_TOKEN" && -n "$TG_CHAT_ID" ]] && TG_ENABLED=true
 
 # IA
@@ -528,7 +528,7 @@ mod_recon(){
   log INFO "═══ RECON PASIVO / ACTIVO ═══"
   local r="$outdir/recon"
 
-  run_tool "WHOIS" "whois" "whois $domain" "$r/whois.txt"
+  run_tool "WHOIS" "whois" "whois -H $domain" "$r/whois.txt"
   run_tool "DIG" "dig" "dig ANY $domain +noall +answer; dig NS $domain +short; dig MX $domain +short; dig TXT $domain +short" "$r/dns.txt"
   run_tool "subfinder" "subfinder" "subfinder -d $domain -silent -all" "$r/subfinder.txt"
   run_tool "assetfinder" "assetfinder" "assetfinder --subs-only $domain" "$r/assetfinder.txt"
@@ -545,7 +545,7 @@ mod_recon(){
   fi
 
   if [[ -s "$r/subs_all.txt" ]]; then
-    run_tool "httpx-alive" "httpx" "httpx -l $r/subs_all.txt -silent -status-code -title -tech-detect -follow-redirects -threads $THREADS" "$r/httpx_alive.txt"
+    run_tool "httpx-alive" "httpx" "httpx -l $r/subs_all.txt -silent -status-code -title -tech-detect -follow-redirects -max-redirects 3 -threads $THREADS -timeout 10 -retries 1" "$r/httpx_alive.txt"
     run_tool "naabu-live" "naabu" "naabu -list $r/subs_all.txt -rate 200 -silent -top-ports 1000" "$r/naabu.txt"
   else
     run_tool "httpx" "httpx" "echo https://$domain | httpx -silent -status-code -title -tech-detect -content-length" "$r/httpx.txt"
@@ -618,7 +618,7 @@ mod_vuln(){
   fi
 
   run_tool "nuclei" "nuclei" \
-    "nuclei -l $v/alive_urls.txt -severity $NUCLEI_SEVERITY -silent -stats -o $v/nuclei.txt" \
+    "nuclei -l $v/alive_urls.txt -severity $NUCLEI_SEVERITY -silent -rl 150 -timeout 10 -retries 1 -duc -o $v/nuclei.txt" \
     "$v/nuclei.txt"
 
   run_tool "dalfox" "dalfox" \
@@ -631,7 +631,7 @@ mod_vuln(){
       "$v/dalfox_mass.txt"
   fi
 
-  run_tool "nikto" "nikto" "nikto -h https://$domain -output $v/nikto.txt -Format txt" "$v/nikto.txt"
+  run_tool "nikto" "nikto" "nikto -h https://$domain -timeout 10 -nointeractive -ssl -Tuning 123456 -output $v/nikto.txt -Format txt" "$v/nikto.txt"
 }
 
 mod_ghauri(){
