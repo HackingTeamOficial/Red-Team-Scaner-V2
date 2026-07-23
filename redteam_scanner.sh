@@ -20,8 +20,8 @@ NUCLEI_SEVERITY="${NUCLEI_SEVERITY:-critical,high,medium}"
 GHAURI_URL_LIMIT="${GHAURI_URL_LIMIT:-15}"
 
 # Telegram (configurar con variables de entorno o editar aquí)
-TG_BOT_TOKEN="PON TU TOKEN AQUI DE TELEGRAM"
-TG_CHAT_ID="IDTELEGRAM"
+TG_BOT_TOKEN="PonAquiELTOKENdeTUTelegram"
+TG_CHAT_ID="PonaquielIDdetuTelegram"
 TG_ENABLED=true
 [[ -n "$TG_BOT_TOKEN" && -n "$TG_CHAT_ID" ]] && TG_ENABLED=true
 
@@ -148,6 +148,9 @@ tg_send(){
     log TG "Telegram desactivado (configura TG_BOT_TOKEN y TG_CHAT_ID)"
     return 0
   fi
+  # ─── FIRMA AUTOMÁTICA ───────────────────────────────────------------------------------------------
+  msg="${msg}%0A%0A🔐 <b>Escaneo Realizado Por Hacking Team, By Juan Antonio Comunidad De Hackers</b>"
+  # ────────────────────────────────────────────────────────------------------------------------------
   log TG "Enviando notificación..."
   local resp
   resp="$(curl -sk --max-time 10 \
@@ -617,8 +620,25 @@ mod_vuln(){
     echo "https://$domain" > "$v/alive_urls.txt"
   fi
 
+run_tool_with_output(){
+  local name="$1" bin="$2" cmd="$3" outfile="$4"
+  if ! have "$bin"; then
+    log WARN "$name omitido ($bin no está en PATH)"
+    return 0
+  fi
+  log RUN "$name..."
+  # No redirigir stdout porque la tool ya usa -o
+  if _timeout_cmd "$TIMEOUT_SECONDS" bash -c "$cmd" 2>> "$aggregate"; then
+    local lines
+    lines=$(wc -l < "$outfile" 2>/dev/null | tr -d ' ' || echo 0)
+    log OK "$name → $outfile (${lines} líneas)"
+  else
+    log WARN "$name falló o timeout"
+  fi
+}
+
   run_tool "nuclei" "nuclei" \
-    "nuclei -l $v/alive_urls.txt -severity $NUCLEI_SEVERITY -silent -rl 150 -timeout 10 -retries 1 -duc -o $v/nuclei.txt" \
+    "nuclei -l $v/alive_urls.txt -severity $NUCLEI_SEVERITY -silent -rl 150 -timeout 10 -t /home/kali/Documentos/sqli-xss-nuclei/ -retries 1 -duc" \
     "$v/nuclei.txt"
 
   run_tool "dalfox" "dalfox" \
