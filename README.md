@@ -123,7 +123,17 @@ Video de la herramienta: https://youtu.be/WymycALbqsg
 Si prefieres ponerlas fijas, edita las líneas al inicio del script donde pone TG_BOT_TOKEN="${TG_BOT_TOKEN:-}" y pon el valor entre las comillas.
     
 
-Nuestras Redes Sociales
+🚀 Si te mola la ciberseguridad y quieres subir de nivel rodeado de gente que está en lo mismo que tú… este es tu sitio.
+
+🌐 Página Web: https://www.hackingteamoficcial.uk/
+
+💻 GitHub: https://github.com/HackingTeamOficial
+
+Informacion Por Telegram: @hackingteamprohackers
+
+Alegrame con un buen Cafe
+
+https://www.paypal.com/paypalme/jsecopalacios
 
 Telegram
 
